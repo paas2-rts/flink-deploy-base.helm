@@ -1,0 +1,8 @@
+global:
+  flinkVersion: v1_14
+  flinkConfiguration:
+    state-savepoints-dir: file:///flink-data/savepoints
+    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    high-availability-storageDir: file:///flink-data/ha
+  taskManager:
+    numberOfTaskSlots: "1"

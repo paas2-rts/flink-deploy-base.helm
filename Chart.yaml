@@ -1,0 +1,9 @@
+apiVersion: v1
+appVersion: "1.0"
+description: Chart for Apache Flink
+name: flink-deploy-base
+version: 1.0.0
+maintainers:
+  - name: charts-maintainers
+    email: gimral@gmail.com
+home: https://github.com/paas2-rts/flink-deploy-base.helm

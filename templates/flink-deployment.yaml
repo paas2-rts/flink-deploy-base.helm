@@ -1,0 +1,43 @@
+apiVersion: flink.apache.org/v1alpha1
+kind: FlinkDeployment
+metadata:
+  name: {{ include "flink.fullname" . }}
+  labels:
+{{ include "flink.labels" . | indent 4 }}
+spec:
+  image: {{ .Values.global.image }}
+  flinkVersion: {{ .Values.global.flinkVersion }}
+  flinkConfiguration:
+    taskmanager.numberOfTaskSlots: {{ .Values.global.taskManager.numberOfTaskSlots | quote }}
+    # Savepoint directory should be reachable by the migration jobs(etc switch/fail over)
+    state.savepoints.dir: file:///flink-data/savepoints
+    high-availability: org.apache.flink.kubernetes.highavailability.KubernetesHaServicesFactory
+    high-availability.storageDir: file:///flink-data/ha
+  jobManager: 
+    replicas: {{ .Values.global.jobManager.replicas }}
+    resource:
+      memory: {{ .Values.global.jobManager.resource.memory | quote }}
+      cpu: {{ .Values.global.jobManager.resource.cpu }}
+      {{ with .Values.global.jobManager.podTemplate }}
+      podTemplate: {{ toYaml . | nindent 8 }}
+      {{ end }}
+  taskManager:
+    resource:
+      memory: {{ .Values.global.taskManager.resource.memory | quote }}
+      cpu: {{ .Values.global.taskManager.resource.cpu }}
+      {{ with .Values.global.taskManager.podTemplate }}
+      podTemplate: {{ toYaml . | nindent 8 }}
+      {{ end }}
+  podTemplate:
+    spec:
+      serviceAccount: flink
+      containers:
+        - name: flink-main-container
+          volumeMounts:
+          - mountPath: /flink-data
+            name: flink-volume
+      volumes:
+      - name: flink-volume
+        persistentVolumeClaim:
+            claimName: {{ include "flink.fullname" . }}-pvc
+  job: {{- toYaml .Values.global.job | nindent 4 }}
