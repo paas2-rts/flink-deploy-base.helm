@@ -15,7 +15,7 @@ If release name contains chart name it will be used as a full name.
 {{- if .Values.global.fullnameOverride -}}
 {{- .Values.global.fullnameOverride | trunc 63 | trimSuffix "-" -}}
 {{- else -}}
-{{- $name := default "flink-deploy" .Values.global.nameOverride -}}
+{{- $name := default "" .Values.global.nameOverride -}}
 {{- if contains $name .Release.Name -}}
 {{- .Release.Name | trunc 63 | trimSuffix "-" -}}
 {{- else -}}

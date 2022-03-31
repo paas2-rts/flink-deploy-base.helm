@@ -30,6 +30,7 @@ spec:
       {{ end }}
   podTemplate:
     spec:
+    #TODO: use vault injector to get kafka,ignite,mongo connection info,cert 
       serviceAccount: flink
       containers:
         - name: flink-main-container
